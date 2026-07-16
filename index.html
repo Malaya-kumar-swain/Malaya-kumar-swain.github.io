@@ -121,6 +121,18 @@
   .btn-ghost:hover { border-color: var(--gold); transform: translateY(-2px); }
   .nav-toggle { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
 
+  /* résumé dropdown */
+  .rez-dd { position: relative; }
+  .rez-toggle { display: inline-flex; align-items: center; gap: 8px; }
+  .rez-chev { transition: transform 0.25s var(--ease); }
+  .rez-dd.open .rez-chev { transform: rotate(180deg); }
+  .rez-menu { position: absolute; top: calc(100% + 10px); right: 0; min-width: 236px; background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: 14px; padding: 6px; box-shadow: var(--shadow); opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s; z-index: 120; }
+  .rez-dd.open .rez-menu { opacity: 1; visibility: visible; transform: none; }
+  .rez-menu a { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 9px; color: var(--text); font-size: 0.9rem; font-weight: 500; transition: background 0.2s; }
+  .rez-menu a:hover { background: var(--card-hover); }
+  .rez-menu a .ext { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted-2); margin-left: auto; }
+  .rez-menu a .pdf { color: var(--gold-soft); } .rez-menu a .doc { color: var(--azure); }
+
   /* ============ HERO ============ */
   .hero { padding: 168px 0 96px; position: relative; }
   .hero-grid { display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 60px; align-items: center; }
@@ -341,7 +353,23 @@
         <a href="#work">Selected Work</a>
         <a href="#career">Career</a>
         <a href="#expertise">Expertise</a>
-        <a href="assets/Malaya_Kumar_Swain_Resume.docx" download class="btn btn-primary">Résumé</a>
+        <div class="rez-dd" id="rezDd">
+          <button class="btn btn-primary rez-toggle" id="rezToggle" aria-haspopup="true" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            Résumé
+            <svg class="rez-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="rez-menu" id="rezMenu" role="menu">
+            <a href="assets/Malaya_Kumar_Swain_Resume.pdf" download role="menuitem">
+              <svg class="pdf" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Download as PDF <span class="ext">.pdf</span>
+            </a>
+            <a href="assets/Malaya_Kumar_Swain_Resume.docx" download role="menuitem">
+              <svg class="doc" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              Download as Word <span class="ext">.docx</span>
+            </a>
+          </div>
+        </div>
       </nav>
       <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">
         <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -687,6 +715,15 @@
   const toggle = document.getElementById('navToggle'), links = document.getElementById('navLinks');
   toggle.addEventListener('click', () => links.classList.toggle('open'));
   links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
+
+  // résumé dropdown
+  const rezDd = document.getElementById('rezDd'), rezToggle = document.getElementById('rezToggle');
+  if (rezToggle) {
+    rezToggle.addEventListener('click', (e) => { e.stopPropagation(); const open = rezDd.classList.toggle('open'); rezToggle.setAttribute('aria-expanded', open); });
+    document.addEventListener('click', (e) => { if (!rezDd.contains(e.target)) { rezDd.classList.remove('open'); rezToggle.setAttribute('aria-expanded', 'false'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { rezDd.classList.remove('open'); rezToggle.setAttribute('aria-expanded', 'false'); } });
+    rezDd.querySelectorAll('.rez-menu a').forEach(a => a.addEventListener('click', () => { rezDd.classList.remove('open'); rezToggle.setAttribute('aria-expanded', 'false'); }));
+  }
 
   // cursor-reactive hero gradient
   const hero = document.getElementById('top');
